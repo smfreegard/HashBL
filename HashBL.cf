@@ -1,0 +1,7 @@
+loadplugin Mail::SpamAssassin::Plugin::HashBL	HashBL.pm
+
+ifplugin Mail::SpamAssassin::Plugin::HashBL
+    header   HASHBL_EMAIL	eval:check_hashbl_emails('ebl.msbl.org')
+    describe HASHBL_EMAIL	Message contains email address found on the EBL
+    score    HASHBL_EMAIL	1.0
+endif
