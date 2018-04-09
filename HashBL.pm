@@ -43,6 +43,10 @@ sub new {
     bless ($self, $class);
 
     $self->{hashbl_available} = 1;
+    if ($mailsa->{local_tests_only}) {
+        $self->{hashbl_available} = 0;
+        dbg("only local tests enabled, plugin disabled");
+    }
     $self->set_config($mailsa->{conf});
     $self->register_eval_rule("check_hashbl_emails");
 
@@ -137,7 +141,7 @@ sub _parse_body {
         dbg("Found email $email in body");
         $pms->{hashbl_email_cache}{'body'}{$email} = 1;
     }
-    
+
     return 1;
 }
 
@@ -179,7 +183,7 @@ sub _submit_email_query {
         $self->_finish_email_lookup($pms, $ent2, $pkt);
     }, master_deadline => $pms->{master_deadline} );
 
-    return $ent;   
+    return $ent;
 }
 
 sub _finish_email_lookup {
@@ -195,7 +199,7 @@ sub _finish_email_lookup {
   my $email = $ent->{obj}->{email};
 
   dbg("_finish_email_lookup: ", $ent->{rulename}, $ent->{key}, $email);
- 
+
   my @answer = $pkt->answer;
   foreach my $rr (@answer) {
       if ($rr->address =~ /^127\./) {
