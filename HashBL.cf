@@ -3,5 +3,13 @@ loadplugin Mail::SpamAssassin::Plugin::HashBL	HashBL.pm
 ifplugin Mail::SpamAssassin::Plugin::HashBL
     header   HASHBL_EMAIL	eval:check_hashbl_emails('ebl.msbl.org')
     describe HASHBL_EMAIL	Message contains email address found on the EBL
-    score    HASHBL_EMAIL	1.0
+    score    HASHBL_EMAIL	0.1
+
+    meta     HASHBL_EMAIL_BLACK (0)
+    describe HASHBL_EMAIL_BLACK Message contains email address found on the EBL Black list
+    score    HASHBL_EMAIL_BLACK 3.0
+
+    meta     HASHBL_EMAIL_GREY  (0)
+    describe HASHBL_EMAIL_GREY  Message contains email address found on the EBL Grey list
+    score    HASHBL_EMAIL_GREY  1.0
 endif

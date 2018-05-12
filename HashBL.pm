@@ -1,10 +1,10 @@
 package Mail::SpamAssassin::Plugin::HashBL;
 use strict;
 use warnings;
-my $VERSION = 0.002;
+my $VERSION = 0.003;
 
 # Author: Steve Freegard <steve@freegard.name>
-# Copyright 2017 Steve Freegard
+# Copyright 2018 Steve Freegard
 #
 # <@LICENSE>
 # Licensed to the Apache Software Foundation (ASF) under one or more
@@ -202,11 +202,14 @@ sub _finish_email_lookup {
 
   my @answer = $pkt->answer;
   foreach my $rr (@answer) {
-      if ($rr->address =~ /^127\./) {
-          $self->_got_hit($pms, $ent->{rulename}, $email);
-          $pms->register_async_rule_finish($ent->{rulename});
+      if ($rr->address =~ /^127\.0\.0\./) {
+          $self->_got_hit($pms, $ent->{rulename} . '_BLACK', $email . ' -> ' . $rr->address);
+      }
+      elsif ($rr->address =~ /^127\.0\.1\./) {
+          $self->_got_hit($pms, $ent->{rulename} . '_GREY', $email . ' -> ' . $rr->address);
       }
   }
+  $pms->register_async_rule_finish($ent->{rulename});
 }
 
 sub check_hashbl_emails {
